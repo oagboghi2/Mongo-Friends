@@ -49,7 +49,7 @@ router
     })
     .delete((req, res) => {
         const { id } = req.params;
-        Friend.findById(id)
+        Friend.findByIdAndRemove(id)
             .then( deletedFriend => {
                 if(deletedFriend === null){
                     return res.status(404).json({ errorMessage: "The friend with the specified ID does not exist." });
@@ -65,10 +65,10 @@ router
         const { firstName, lastName, age } = req.body;
         if(!firstName || !lastName || !age){
             return res.status(404).json({ errorMessage: "Please provide firstName, lastName and age for the friend." });
-        } else if( age !== Number || age < 1 || age > 120){
+        } else if( age < 1 || age > 120){
             return res.status(400).json({ errorMessage: "Age must be a number between 1 and 120" });
         }
-            Friend(id, { firstName, lastName, age })
+            Friend.findByIdAndUpdate(id, { firstName, lastName, age })
             .then(updatedFriend => {
                 if(updatedFriend === null){
                     return releaseEvents.status(404).json({ errorMessage: "The friend with the specified ID does not exist." });
@@ -80,9 +80,4 @@ router
             })
         });
     
-
-
-
-
-
 module.exports = router;
